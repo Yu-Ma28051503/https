@@ -1,0 +1,8 @@
+# 証明書を無視する
+certs
+apache2/server.crt
+apache2/server.key
+nginx/server.crt
+nginx/server.key
+
+clear.sh
