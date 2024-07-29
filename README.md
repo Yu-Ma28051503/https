@@ -65,7 +65,7 @@ Email Address []: test@server.com
 秘密鍵と証明書署名要求から自己証明書を`server.crt`という名前で作成する．
 
 ```sh
-$ openssl x509 -req -days 365 -in csr.pem -signkey ca-key.pem -out server.crt
+$ openssl x509 -req -days 365 -in csr.pem -signkey server.key -out server.crt
 ```
 
 - `x509`: Certificate display and signing command
@@ -77,10 +77,11 @@ $ openssl x509 -req -days 365 -in csr.pem -signkey ca-key.pem -out server.crt
 
 
 ## Apache2(httpd)
-自己証明書をcertsディレクトリからコピーする．
+作成した自己証明書をcertsディレクトリからコピーする．
 
 ```sh
 $ cp certs/server* apache2/
+$ cd apache2
 ```
 
 httpdのコンテナイメージを取得
@@ -93,7 +94,7 @@ $ docker image pull httpd:2.4
 $ docker run -d -p 50010:80 --name apache2-http httpd
 ```
 
-このリポジトリ内にはすでに作成してあるが，https用のDockerfileと設定ファイルを作成する．
+このリポジトリ内にはすでに作成してあるが，https用のDockerfileと設定ファイルの中身はこのようになっている．
 
 ```Dockerfile
 # Dockerfile
@@ -159,10 +160,11 @@ $ docker image rm apache2-https
 
 
 ## nginx
-自己証明書をcertsディレクトリからコピーする．
+作成した自己証明書をcertsディレクトリからコピーする．
 
 ```sh
 $ cp certs/server* nginx/
+$ cd nginx
 ```
 
 nginxのコンテナイメージを取得
@@ -175,7 +177,7 @@ $ docker image pull nginx:alpine
 $ docker run -d -p 50012:80 --name nginx-http nginx:alpine
 ```
 
-このリポジトリ内にはすでに作成してあるが，https用のDockerfileと設定ファイルを作成する．
+このリポジトリ内にはすでに作成してあるが，https用のDockerfileと設定ファイルの中身はのこようになっている．
 
 ```Dockerfile
 # Dockerfile
