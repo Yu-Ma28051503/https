@@ -1,16 +1,16 @@
-FROM httpd:latest
+# ベースイメージを指定
+FROM httpd:2.4
 
-# コンテナの更新
-RUN apt-get update
+# 証明書と鍵の配置
+COPY server.crt /usr/local/apache2/conf/server.crt
+COPY server.key /usr/local/apache2/conf/server.key
 
-# SSL通信をするための設定を有効にする
-RUN sed -i \
-		-e 's/^#\(Include .*httpd-ssl.conf\)/\1/' \
-		-e 's/^#\(LoadModule .*mod_ssl.so\)/\1/' \
-		-e 's/^#\(LoadModule .*mod_socache_shmcb.so\)/\1/' \
-		conf/httpd.conf
+# SSLモジュールの有効化と設定の追加
+RUN sed -i '/LoadModule ssl_module/s/^#//g' /usr/local/apache2/conf/httpd.conf && \
+    sed -i '/Include conf\/extra\/httpd-ssl.conf/s/^#//g' /usr/local/apache2/conf/httpd.conf
 
-# 必要なファイルのコピー 
-COPY index.html /usr/local/apache2/htdocs/
-# COPY apache.conf /usr/local/apache2/conf/httpd.conf
-COPY certs/server.crt certs/server.key /usr/local/apache2/conf/
+# SSL設定ファイルの作成
+COPY httpd-ssl.conf /usr/local/apache2/conf/extra/httpd-ssl.conf
+
+# index.htmlの配置
+COPY index.html /usr/local/apache2/htdocs/index.html
